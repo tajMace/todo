@@ -1,6 +1,6 @@
 // taj-mace
 
-package add
+package commands
 
 import (
 	"errors"

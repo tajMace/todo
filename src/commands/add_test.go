@@ -1,7 +1,7 @@
 // taj-mace
 // tests for addition of todo items
 
-package add
+package commands
 
 import (
 	"reflect"
