@@ -11,6 +11,6 @@ type TaskManager struct {
 type Task struct {
 	ID   int    `json:"id"`
 	Text string `json:"text"`
-	Done bool   `json:"done"`
 	Due  string `json:"due"`
+	Done bool   `json:"done"`
 }
