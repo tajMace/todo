@@ -19,12 +19,7 @@ func Add(tasks types.TaskManager, text, due string) (types.TaskManager, error) {
 		return tasks, ErrIncorrectDateFormat
 	}
 
-	newTask := types.Task{
-		ID:   tasks.NextID,
-		Text: text,
-		Due:  due,
-		Done: false,
-	}
+	newTask := types.NewTask(tasks.NextID, text, due)
 
 	return types.TaskManager{
 		NextID: tasks.NextID + 1,
