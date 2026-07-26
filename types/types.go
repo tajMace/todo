@@ -1,7 +1,7 @@
 // taj-mace
 // global project types
 
-package main
+package types
 
 type TaskManager struct {
 	NextID int    `json:"next_id"`
