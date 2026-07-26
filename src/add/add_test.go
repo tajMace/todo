@@ -4,32 +4,39 @@
 package add
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/tajMace/todo/types"
 )
 
 func TestAdd(t *testing.T) {
-	t.Run("basic success: adds a todo item", func(t *testing.T) {
+	t.Run("addition to an empty list", func(t *testing.T) {
 		tasks := types.TaskManager{}
-		newTask := types.Task{
-			ID: tasks.NextID,
-			Text: "todo",
-			Done: false,
-			Due: nil,
+
+		newTasks := Add(tasks, "todo", "")
+		if len(newTasks.Tasks) == 0 {
+			t.Fatalf("expected item to be added, but wasn't")
 		}
 
-		newTasks = Add(tasks, newTask)
-		if len(newTasks) == 0 {
-			t.Fatal("expected item to be added, but wasn't")
+		wantTask := types.Task{
+			ID:   tasks.NextID,
+			Text: "todo",
+			Done: false,
+			Due:  "",
 		}
 
 		want := types.TaskManager{
 			NextID: 1,
-			Tasks: []types.Task{newTask}
+			Tasks:  []types.Task{wantTask},
 		}
-		if newTasks != want {
-			t.Error("item appended incorrectly")
+
+		if newTasks.NextID != want.NextID {
+			t.Errorf("NextID wrong: got %d, wanted %d", newTasks.NextID, want.NextID)
+		}
+
+		if !reflect.DeepEqual(newTasks.Tasks, want.Tasks) {
+			t.Errorf("Tasks wrong: got %+v, wanted %+v", newTasks.Tasks, want.Tasks)
 		}
 	})
 }
