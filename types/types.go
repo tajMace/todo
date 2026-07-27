@@ -13,6 +13,11 @@ func NewTaskManager(tasks []Task) TaskManager {
 	return TaskManager{NextID: len(tasks), Tasks: tasks}
 }
 
+func (tm *TaskManager) NewTaskOnManager(text, due string) {
+	tm.Tasks = append(tm.Tasks, NewTask(tm.NextID, text, due))
+	tm.NextID++
+}
+
 /* ===== Task + Helpers ===== */
 type Task struct {
 	ID   int    `json:"id"`
