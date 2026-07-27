@@ -10,6 +10,7 @@ import (
 
 	"github.com/tajMace/todo/src/commands"
 	"github.com/tajMace/todo/src/storage"
+	"github.com/tajMace/todo/types"
 )
 
 func main() {
@@ -27,6 +28,8 @@ func main() {
 	handleErrorReturn(err)
 
 	result := tm
+	mutation := false
+
 	switch args[0] {
 	case "add":
 		{
@@ -41,6 +44,18 @@ func main() {
 
 			result, err = commands.Add(tm, text, date)
 			handleErrorReturn(err)
+
+			mutation = true
+		}
+	case "list":
+		{
+			if len(result.Tasks) == 0 {
+				fmt.Println("No items todo! Well done!")
+				break
+			}
+
+			data := commands.List(result)
+			printFormatter(data)
 		}
 	default:
 		{
@@ -48,8 +63,10 @@ func main() {
 		}
 	}
 
-	err = storage.SaveTasks(path, result)
-	handleErrorReturn(err)
+	if mutation {
+		err = storage.SaveTasks(path, result)
+		handleErrorReturn(err)
+	}
 }
 
 /* ========== HELPERS ========== */
@@ -63,4 +80,33 @@ func handleErrorReturn(err error) {
 func earlyReturn() {
 	fmt.Println("Usage: todo <title> [arguments]")
 	os.Exit(1)
+}
+
+func printFormatter(tasks []types.Task) {
+	index := 0
+
+	fmt.Print("\033[H\033[2J") // terminal clear code
+
+	fmt.Println(" ================================ ")
+	fmt.Println(" ========== TASKS TODO ==========")
+	fmt.Println(" ================================ ")
+
+	fmt.Println("")
+	fmt.Println(" ---------- Dated Tasks ----------")
+	for _, task := range tasks {
+		if task.Due == "" {
+			break
+		}
+
+		fmt.Printf("[ %d ] \t %s - %s\n", task.ID, task.Text, task.Due)
+		index++
+	}
+
+	fmt.Println("")
+	fmt.Println(" --------- Undated Tasks ---------")
+	for _, task := range tasks[index:] {
+		fmt.Printf("[ %d ] \t %s\n", task.ID, task.Text)
+	}
+
+	fmt.Println("")
 }
