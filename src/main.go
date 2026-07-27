@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"github.com/tajMace/todo/src/commands"
 	"github.com/tajMace/todo/src/storage"
@@ -49,13 +50,28 @@ func main() {
 		}
 	case "list":
 		{
-			if len(result.Tasks) == 0 {
+
+			data := commands.List(result)
+			if len(data) == 0 {
 				fmt.Println("No items todo! Well done!")
 				break
 			}
-
-			data := commands.List(result)
 			printFormatter(data)
+		}
+	case "done":
+		{
+			if len(args) < 2 {
+				earlyReturn()
+			}
+
+			id, err := strconv.Atoi(args[1])
+			if err != nil {
+				earlyReturn()
+			}
+
+			result, err = commands.Done(tm, id)
+
+			mutation = true
 		}
 	default:
 		{

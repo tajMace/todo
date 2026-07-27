@@ -35,3 +35,7 @@ func NewTask(id int, text, due string) Task {
 		Done: false,
 	}
 }
+
+func (t *Task) MarkDone() {
+	t.Done = true
+}
