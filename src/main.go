@@ -35,7 +35,7 @@ func main() {
 	case "add":
 		{
 			if len(args) < 2 {
-				earlyReturn()
+				earlyReturn() // TODO - more robust error
 			}
 			text := args[1]
 			date := ""
@@ -61,7 +61,7 @@ func main() {
 	case "done":
 		{
 			if len(args) < 2 {
-				earlyReturn()
+				earlyReturn() // TODO - more robust error
 			}
 
 			id, err := strconv.Atoi(args[1])
@@ -70,6 +70,24 @@ func main() {
 			}
 
 			result, err = commands.Done(tm, id)
+			if err != nil {
+				handleErrorReturn(err)
+			}
+
+			mutation = true
+		}
+	case "rm":
+		{
+			if len(args) < 2 {
+				earlyReturn() // TODO - more robust error
+			}
+
+			id, err := strconv.Atoi(args[1])
+			if err != nil {
+				handleErrorReturn(err)
+			}
+
+			result, err = commands.Remove(tm, id)
 			if err != nil {
 				handleErrorReturn(err)
 			}
@@ -107,11 +125,11 @@ func printFormatter(tasks []types.Task) {
 	fmt.Print("\033[H\033[2J") // terminal clear code
 
 	fmt.Println(" ================================ ")
-	fmt.Println(" ========== TASKS TODO ==========")
+	fmt.Println(" ========== TASKS TODO ========== ")
 	fmt.Println(" ================================ ")
 
 	fmt.Println("")
-	fmt.Println(" ---------- Dated Tasks ----------")
+	fmt.Println(" --------- Dated  Tasks --------- ")
 	for _, task := range tasks {
 		if task.Due == "" {
 			break
@@ -122,7 +140,7 @@ func printFormatter(tasks []types.Task) {
 	}
 
 	fmt.Println("")
-	fmt.Println(" --------- Undated Tasks ---------")
+	fmt.Println(" -------- Undated  Tasks -------- ")
 	for _, task := range tasks[index:] {
 		fmt.Printf("[ %d ] \t %s\n", task.ID, task.Text)
 	}
