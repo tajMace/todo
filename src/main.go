@@ -46,7 +46,7 @@ func main() {
 			result, err = commands.Add(tm, text, date)
 			handleErrorReturn(err)
 
-			fmt.Printf("Successfully added task with id: %d", result.NextID-1)
+			fmt.Printf("Successfully added task with id: %d\n", result.NextID-1)
 			mutation = true
 		}
 	case "list":
@@ -75,7 +75,7 @@ func main() {
 				handleErrorReturn(err)
 			}
 
-			fmt.Printf("Successfully marked task %d as done!", id)
+			fmt.Printf("Successfully marked task %d as done!\n", id)
 			mutation = true
 		}
 	case "rm":
