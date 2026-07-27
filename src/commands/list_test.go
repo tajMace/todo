@@ -20,10 +20,7 @@ func TestList(t *testing.T) {
 			{ID: 1, Text: "test", Due: ""},
 		}
 
-		got := List(tm)
-		if !reflect.DeepEqual(got, want) {
-			t.Errorf("ID order wrong: got %+v, wanted %+v", got, want)
-		}
+		listAndCompare(t, tm, want)
 	})
 
 	t.Run("correctly orders by date", func(t *testing.T) {
@@ -36,10 +33,7 @@ func TestList(t *testing.T) {
 			types.NewTask(0, "test", "2026-07-27"),
 		}
 
-		got := List(tm)
-		if !reflect.DeepEqual(got, want) {
-			t.Errorf("date order wrong: got %+v, wanted %+v", got, want)
-		}
+		listAndCompare(t, tm, want)
 	})
 
 	t.Run("undated tasks sort after dated tasks", func(t *testing.T) {
@@ -55,10 +49,7 @@ func TestList(t *testing.T) {
 			{ID: 0, Text: "no date", Due: ""},
 		}
 
-		got := List(tm)
-		if !reflect.DeepEqual(got, want) {
-			t.Errorf("undated ordering wrong: got %+v, wanted %+v", got, want)
-		}
+		listAndCompare(t, tm, want)
 	})
 
 	t.Run("multiple undated tasks fall back to ID order", func(t *testing.T) {
@@ -74,10 +65,7 @@ func TestList(t *testing.T) {
 			{ID: 1, Text: "second", Due: ""},
 		}
 
-		got := List(tm)
-		if !reflect.DeepEqual(got, want) {
-			t.Errorf("undated tiebreak wrong: got %+v, wanted %+v", got, want)
-		}
+		listAndCompare(t, tm, want)
 	})
 
 	t.Run("correctly filters doneness", func(t *testing.T) {
@@ -92,10 +80,7 @@ func TestList(t *testing.T) {
 			},
 		}
 
-		got := List(tm)
-		if !reflect.DeepEqual(got, want) {
-			t.Errorf("doneness filter wrong: got %+v, wanted %+v", got, want)
-		}
+		listAndCompare(t, tm, want)
 	})
 
 	t.Run("all tasks done returns empty result", func(t *testing.T) {
@@ -107,18 +92,13 @@ func TestList(t *testing.T) {
 			},
 		}
 
-		got := List(tm)
-		if len(got) != 0 {
-			t.Errorf("expected no tasks, got %+v", got)
-		}
+		listAndCompare(t, tm, []types.Task{})
 	})
 
 	t.Run("doesn't fail on an empty list", func(t *testing.T) {
 		want := []types.Task(nil)
-		got := List(types.NewTaskManager(nil))
-		if !reflect.DeepEqual(got, want) {
-			t.Errorf("failed on empty list: got %+v, wanted %+v", got, want)
-		}
+
+		listAndCompare(t, types.NewTaskManager(nil), want)
 	})
 
 	t.Run("does not mutate the input TaskManager", func(t *testing.T) {
@@ -135,9 +115,17 @@ func TestList(t *testing.T) {
 		}
 
 		_ = List(original)
-
 		if !reflect.DeepEqual(original, inputCopy) {
 			t.Errorf("List mutated its input: got %+v, wanted unchanged %+v", original, inputCopy)
 		}
 	})
+}
+
+func listAndCompare(t testing.TB, tm types.TaskManager, want []types.Task) {
+	t.Helper()
+
+	got := List(tm)
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %+v, wanted %+v", got, want)
+	}
 }
