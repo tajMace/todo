@@ -13,7 +13,7 @@ import (
 func List(tm types.TaskManager) []types.Task {
 	tasks := slices.Clone(tm.Tasks)
 	tasks = slices.DeleteFunc(tasks, func(a types.Task) bool {
-		return a.Done == true
+		return a.Done
 	})
 
 	slices.SortFunc(tasks, func(a, b types.Task) int {
