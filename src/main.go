@@ -66,10 +66,13 @@ func main() {
 
 			id, err := strconv.Atoi(args[1])
 			if err != nil {
-				earlyReturn()
+				handleErrorReturn(err)
 			}
 
 			result, err = commands.Done(tm, id)
+			if err != nil {
+				handleErrorReturn(err)
+			}
 
 			mutation = true
 		}
